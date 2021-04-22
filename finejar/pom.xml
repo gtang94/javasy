@@ -24,6 +24,7 @@
     </build>
 
     <dependencies>
+        <!--guava-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -37,6 +38,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
