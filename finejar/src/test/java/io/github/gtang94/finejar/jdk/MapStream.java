@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 /**
  * @author tanggq
  * @class MapSort
- * @description JDK1.8 map排序
+ * @description Map流相关
  * @date 2021/4/25
  **/
-public class MapSort {
+public class MapStream {
 
     /**
      * @description HashMap根据value排序

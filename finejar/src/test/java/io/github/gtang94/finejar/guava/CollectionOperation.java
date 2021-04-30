@@ -11,7 +11,7 @@ import java.util.*;
  * @description 集合操作
  * @date 2021/4/20
  **/
-public class CollectionOpration {
+public class CollectionOperation {
 
     /**
      * @description: 创建不可变的集合
