@@ -95,6 +95,12 @@ public class StringOperation {
         String str2 = "kljklasfn";
 
         System.err.println(Strings.commonPrefix("OOOccSSS", "OccBBB"));
+
+        String str3 = "XJZH2021SJH00031";
+        String max = str3.substring(str3.length() - 5, str3.length());
+//        System.err.println(str3.substring(str3.length() - 5, str3.length()));
+        String res = String.format("%05d", Integer.valueOf(max) + 1);
+        System.err.println(res);
     }
 
 
