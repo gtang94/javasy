@@ -1,8 +1,12 @@
 package io.github.gtang94.finejar.hutool;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author tanggq
@@ -37,5 +41,20 @@ public class QROperation {
     public void deCodeSimpleQR() {
         String qrString = QrCodeUtil.decode(FileUtil.file("D://test/test_qr.jpg"));
         System.err.println(qrString);
+    }
+
+    @Test
+    public void test() {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        QrCodeUtil.generate(
+                "http://www.baidu.com",
+                300,
+                300,
+                ImgUtil.IMAGE_TYPE_PNG,
+                outputStream);
+        byte[] pngData = outputStream.toByteArray();
+        System.err.println(Base64.encode(pngData));
     }
 }

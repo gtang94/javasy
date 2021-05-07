@@ -1,27 +1,28 @@
-package io.github.gtang94.finejar.mini;
+package io.github.gtang94.springboot.office.util;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileAppender;
 import cn.hutool.core.io.file.FileReader;
-import org.junit.Test;
 
 import java.util.List;
 
 /**
- * @class: ConvertFtl
- * @description:
- * @author: tanggq
- * @date: 5/7/21
- * @version: 1.0
- */
-public class ConvertFtl {
+ * @author tanggq
+ * @class ConvertXml
+ * @description
+ * @date 2021/5/7
+ **/
+public class ConvertXml {
 
-    @Test
-    public void formatXml() throws Exception {
-        FileReader fileReader = new FileReader("");
+    public static void main(String[] args) throws Exception {
+        formatXml("C:\\Users\\olivi\\Downloads\\twt.ftl", "C:\\Users\\olivi\\Downloads\\twt.ftl");
+    }
+
+    public static void formatXml(String src, String dst) throws Exception {
+        FileReader fileReader = new FileReader(src);
 
         List<String> strings = fileReader.readLines();
-        FileAppender appender = new FileAppender(FileUtil.newFile(""), 16, true);
+        FileAppender appender = new FileAppender(FileUtil.newFile(dst), 16, true);
 
         for (String string : strings) {
             if (!string.contains("$")) {
