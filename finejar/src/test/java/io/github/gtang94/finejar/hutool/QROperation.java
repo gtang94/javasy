@@ -43,11 +43,13 @@ public class QROperation {
         System.err.println(qrString);
     }
 
+    /**
+     * 生成base64的二维码
+     */
     @Test
-    public void test() {
+    public void createBase64SimpleQR() {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
         QrCodeUtil.generate(
                 "http://www.baidu.com",
                 300,
@@ -56,5 +58,11 @@ public class QROperation {
                 outputStream);
         byte[] pngData = outputStream.toByteArray();
         System.err.println(Base64.encode(pngData));
+    }
+
+    @Test
+    public void test() {
+        int c = 1;
+        System.err.println( c == Integer.valueOf("1"));
     }
 }
