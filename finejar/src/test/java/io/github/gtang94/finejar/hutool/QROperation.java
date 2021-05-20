@@ -44,8 +44,11 @@ public class QROperation {
     }
 
     /**
-     * 生成base64的二维码
-     */
+     * @description 生成base64的二维码
+     * @return: null
+     * @author tanggq
+     * @date 2021/5/11
+     **/
     @Test
     public void createBase64SimpleQR() {
 
@@ -60,9 +63,4 @@ public class QROperation {
         System.err.println(Base64.encode(pngData));
     }
 
-    @Test
-    public void test() {
-        int c = 1;
-        System.err.println( c == Integer.valueOf("1"));
-    }
 }

@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ntm?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/javasy?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
   jackson:
@@ -13,6 +13,7 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
 
 # 设置freemarker
 freemarker:

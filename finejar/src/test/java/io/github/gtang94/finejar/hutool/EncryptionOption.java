@@ -20,6 +20,12 @@ import java.util.Base64;
 public class EncryptionOption {
 
 
+    /**
+     * @description AES算法加密和解密
+     * @return: null
+     * @author tanggq
+     * @date 2021/5/11
+     **/
     @Test
     public void aesEncrypt() throws UnsupportedEncodingException {
 

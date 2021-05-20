@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.gtang94.springboot.mybatis.dao.RoleDao">
+    <resultMap id="getHashMapDataMap" type="HashMap">
+        <result property="key" column="id" javaType="java.lang.String" jdbcType="BIGINT"/>
+        <result property="value" column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+<!--    <select id="getHashMapData" resultMap="getHashMapDataMap">-->
+    <select id="getHashMapData" resultType="java.lang.String">
+        select id as id, name as name from role limit 1;
+    </select>
+</mapper>
