@@ -1,11 +1,14 @@
 package io.github.gtang94.springboot.mybatis.controller;
 
+import cn.hutool.json.JSONObject;
+import io.github.gtang94.springboot.mybatis.bean.Person;
 import io.github.gtang94.springboot.mybatis.dao.RoleDao;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -29,5 +32,13 @@ public class RoleController {
 //        hashMapData.put("1", "aaa");
 //        hashMapData.put("2", "bbb");
         return hashMapData;
+    }
+
+    @GetMapping("/test")
+    public Person test() {
+        Person person = new Person();
+        person.setName("name");
+        person.setBirthday(new Date("2021/5/31"));
+        return person;
     }
 }
