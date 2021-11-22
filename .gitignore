@@ -27,6 +27,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 log/
+*.DS_Store
 
 ### IntelliJ IDEA ###
 .idea

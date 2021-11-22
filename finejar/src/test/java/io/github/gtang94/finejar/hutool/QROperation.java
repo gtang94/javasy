@@ -4,6 +4,7 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.extra.qrcode.QrConfig;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -29,6 +30,23 @@ public class QROperation {
                 300,
                 300,
                 FileUtil.file("D://test/test_qr.jpg"));
+    }
+
+    /**
+     * @description: 创建包含logo的二维码
+     * @return: void
+     * @author: tanggq
+     * @date: 7/18/21
+     **/
+    @Test
+    public void createSimpleQRWithLogo() {
+        QrCodeUtil.generate(
+                "http://www.baidu.com",
+                QrConfig.create()
+                        .setImg("/Users/tangguoqiang/data/work/zhonghe/app/zh_logo.png")
+                        .setWidth(300)
+                        .setHeight(300),
+                FileUtil.file("/tmp/test_qr.jpg"));
     }
 
     /**
