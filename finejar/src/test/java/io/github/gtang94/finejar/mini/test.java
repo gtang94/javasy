@@ -12,6 +12,12 @@ import org.junit.Test;
 public class test {
 
     @Test
-    public void test() {
+    public void test1() {
+        System.err.println(Math.round(-1.5));
+    }
+
+    @Test
+    public void test2() {
+        System.err.println(new StringBuffer("ABCD").reverse().toString());
     }
 }
