@@ -1,11 +1,11 @@
 package io.github.gtang94.finejar.jdk;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.text.Collator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,5 +70,30 @@ public class MapStream {
                         LinkedHashMap::new
                 ));
         System.err.println(sortedMap.toString());
+    }
+
+    /**
+     * @description HashMap根据指定的字符串排序
+     * @author tanggq
+     * @date 2021/7/6
+     **/
+    @Test
+    public void treeMapSortByOtherMap() {
+        HashMap<String, List<Integer>> hashMap = Maps.newHashMap();
+        hashMap.put("test1", Lists.newArrayList(1, 11, 111));
+        hashMap.put("test2", Lists.newArrayList(2, 22, 222));
+        hashMap.put("test3", Lists.newArrayList(3, 33, 333));
+
+        List<String> standard = Lists.newArrayList("test2", "test1", "test3");
+
+        Map<String, List<Integer>> result = Maps.newLinkedHashMap();
+
+        standard.stream().forEach(value -> {
+            if (hashMap.containsKey(value)) {
+                result.put(value, hashMap.get(value));
+            }
+        });
+
+        System.err.println(result);
     }
 }

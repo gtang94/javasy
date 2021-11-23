@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserAopController {
 
     @GetMapping("/getOne")
     @ControllerWebLog(name = "查询", intoDB = true)
