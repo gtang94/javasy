@@ -8,10 +8,10 @@ import java.util.concurrent.FutureTask;
 /**
  * @author tanggq
  * @class
- * @description
+ * @description 实现Callable接口实现多线程
  * @date 2021/11/23
  */
-public class CreateThread3 implements Callable {
+public class CreateThreadWithImplementCallable implements Callable {
 
     @Override
     public String call() throws Exception {
@@ -20,7 +20,7 @@ public class CreateThread3 implements Callable {
 
     @Test
     public void test() throws Exception {
-        FutureTask<String> task = new FutureTask<>(new CreateThread3());
+        FutureTask<String> task = new FutureTask<>(new CreateThreadWithImplementCallable());
         new Thread(task).start();
         System.err.println(task.get());
     }

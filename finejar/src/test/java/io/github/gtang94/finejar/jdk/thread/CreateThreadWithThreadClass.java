@@ -5,19 +5,20 @@ import org.junit.Test;
 /**
  * @author tanggq
  * @class
- * @description
+ * @description 通过继承Thread类实现多线程
  * @date 2021/11/23
  */
-public class CreateThread1 extends Thread {
+public class CreateThreadWithThreadClass extends Thread {
 
     @Override
     public void run() {
         System.err.println("通过继承Thread类，重写run()方法创建线程");
     }
 
+    // 线程启动
     @Test
-    public void test() {
-        new CreateThread1().start();
+    public void testThreadStart() {
+        new CreateThreadWithThreadClass().start();
     }
 
     @Test

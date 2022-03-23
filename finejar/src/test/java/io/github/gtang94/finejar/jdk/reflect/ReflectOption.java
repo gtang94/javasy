@@ -126,6 +126,7 @@ public class ReflectOption {
     public void updateAttribute() {
         Person person = new Person("张三", 22);
         Class personClass = person.getClass();
+//        Class personClass = Class.forName("io.github.gtang94.finejar.jdk.reflect.Person");
         try {
             Field eyeField = personClass.getDeclaredField("commonEye");
             if (null != eyeField) {

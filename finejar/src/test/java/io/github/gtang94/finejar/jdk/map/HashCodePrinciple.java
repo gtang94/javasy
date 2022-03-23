@@ -3,6 +3,7 @@ package io.github.gtang94.finejar.jdk.map;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HashCodePrinciple {
 

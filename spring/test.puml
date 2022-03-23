@@ -1,0 +1,117 @@
+@startuml sequence-sample
+
+!include https://unpkg.com/plantuml-style-c4@latest/core.puml
+' uncomment the following line and comment the first to use locally
+'!include core.puml
+
+LAYOUT_AS_SKETCH()
+RED_ARROW
+'MEGENTA_ARROW
+
+title <size:20>Spring ioc ClassPathXmlApplicationContext</size>
+
+actor IOC
+
+participant ClassPathXmlApplicationContext as cpxac
+participant AbstractApplicationContext as aac
+participant AbstractRefreshableApplicationContext as arac
+participant AbstractXmlApplicationContext as axac
+participant XmlBeanDefinitionReader as xbdr
+participant DefaultListableBeanFactory as dlbf
+participant AbstractAutowireCapableBeanFactory as aacbf
+participant SimpleInstantiationStrategy as sis
+
+IOC -> cpxac : setConfigLocations()
+activate cpxac
+note over cpxac : 解析xml文件路径
+
+cpxac -> aac : refresh()
+activate aac
+note over aac : 刷新加载bean
+
+aac -> aac : prepareRefresh()
+activate aac
+note over aac : 初始化property资源
+
+aac -> aac : obtainFreshBeanFactory()
+activate aac
+note over aac : 创建beanFactory
+
+aac -> arac : refreshBeanFactory()
+activate arac
+note over arac : 创建beanfactory: DefaultListableBeanFactory
+
+arac -> arac : customizeBeanFactory()
+note over arac : 定制beanfactory
+
+arac -> arac : loadBeanDefinitions()
+note over arac : 加载bean定义
+
+arac -> xbdr : initBeanDefinitionReader()
+activate xbdr
+note over xbdr : 初始化读取bean的reader
+
+xbdr -> xbdr : loadBeanDefinitions()
+note over xbdr : 加载bean定义类
+
+xbdr -> xbdr : doLoadBeanDefinitions()
+note over xbdr : 使用documentLoader加载xml文件
+
+xbdr -> xbdr : parse转换待定
+
+aac -> aac : prepareBeanFactory()
+note over aac : 初始化property资源
+
+aac -> aac : postProcessBeanFactory()
+
+aac -> aac : invokeBeanFactoryPostProcessors()
+
+aac -> aac : registerBeanPostProcessors()
+
+aac -> aac : initMessageSource()
+
+aac -> aac : initApplicationEventMulticaster()
+
+aac -> aac : onRefresh()
+
+aac -> aac : registerListeners()
+
+aac -> aac : finishBeanFactoryInitialization()
+note over aac : 实例化所有剩余的单例bean
+
+aac -> dlbf : preInstantiateSingletons()
+note over dlbf : 初始化非延迟初始化的单例bean
+
+dlbf -> dlbf : getMergedLocalBeanDefinition()
+note over dlbf : 根据beanName从beanDefinitionMap中获取BeanDefiniton
+
+dlbf -> dlbf : getBean()
+note over dlbf : 从缓存中获取bean，如果没有则创建
+
+dlbf -> aacbf : createBean()
+note over aacbf : 通过beanName和RootBeanDefinition创建bean
+
+aacbf -> aacbf : doCreateBean()
+note over aacbf : 执行创建bean的操作
+
+accbf -> accbf : createBeanInstance()
+note over accbf : 创建bean实例
+
+accbf -> accbf : instantiateBean()
+note over accbf : 根据默认构造方法创建bean实例
+
+accbf -> sis : instantiate()
+note over sis : 使用BeanUtils.instantiateClass()方法真正创建bean
+
+accbf -> accbf : populateBean()
+note over accbf : 给实例化后的bean属性赋值
+
+dlbf -> dlbf : addSingleton()
+note over dlbf : 将单例bean放入singletonObjects中
+
+aac -> aac : finishRefresh()
+
+aac -> IOC
+
+
+@enduml
