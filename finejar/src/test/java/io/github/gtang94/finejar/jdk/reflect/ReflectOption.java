@@ -4,6 +4,11 @@ import org.junit.Test;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -124,6 +129,8 @@ public class ReflectOption {
      **/
     @Test
     public void updateAttribute() {
+        ReentrantLock reentrantLock;
+        ReadWriteLock readWriteLock;
         Person person = new Person("张三", 22);
         Class personClass = person.getClass();
 //        Class personClass = Class.forName("io.github.gtang94.finejar.jdk.reflect.Person");
