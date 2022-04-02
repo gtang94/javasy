@@ -8,7 +8,7 @@ import java.util.concurrent.FutureTask;
 /**
  * @author tanggq
  * @class
- * @description 实现Callable接口实现多线程
+ * @description Callable接口实现多线程
  * @date 2021/11/23
  */
 public class CreateThreadWithImplementCallable implements Callable {

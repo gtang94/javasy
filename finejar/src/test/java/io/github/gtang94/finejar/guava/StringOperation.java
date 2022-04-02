@@ -103,5 +103,12 @@ public class StringOperation {
         System.err.println(res);
     }
 
+    @Test
+    public void test2() {
+        String str = "220112100";
+        System.err.println( '0' == str.charAt(6) );
+        System.err.println( str.charAt(str.length() - 3) );
+    }
+
 
 }
