@@ -12,4 +12,8 @@
     <select id="getHashMapData" resultType="java.lang.String">
         select id as id, name as name from role limit 1;
     </select>
+
+    <insert id="save">
+        insert into role(id, name) values (#{id}, #{name})
+    </insert>
 </mapper>

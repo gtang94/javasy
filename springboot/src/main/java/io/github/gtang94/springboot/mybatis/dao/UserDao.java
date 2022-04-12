@@ -8,15 +8,12 @@ import java.util.HashMap;
 
 /**
  * @author tanggq
- * @class RoleDao
+ * @class UserDao
  * @description
- * @date 2021/5/19
+ * @date 2022/4/12
  **/
 @Mapper
-public interface RoleDao {
-
-    @MapKey("id")
-    HashMap<String, String> getHashMapData(String ids);
+public interface UserDao {
 
     void save(@Param("id") Long id, @Param("name") String name);
 }
