@@ -1,4 +1,4 @@
-package io.github.gtang94.finejar.aspose;
+package io.github.gtang94.finejar.aspose.creck;
 
 import com.aspose.words.License;
 import javassist.*;
