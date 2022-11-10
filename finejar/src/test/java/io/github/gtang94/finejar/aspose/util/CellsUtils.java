@@ -1,18 +1,18 @@
-package io.github.gtang94.finejar.aspose;
+package io.github.gtang94.finejar.aspose.util;
 
-import com.aspose.slides.License;
-import com.aspose.slides.Presentation;
+import com.aspose.cells.License;
+import com.aspose.cells.Workbook;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class SlidesUtils {
+public class CellsUtils {
 
     public static void main(String[] args) {
-        String sourceFile = "D:\\workspace\\lib\\test\\FB1001.pptx";
-        String targetFile = "D:\\workspace\\lib\\test\\FB1001.pdf";
+        String sourceFile = "D:\\workspace\\lib\\test\\20220208_2.xlsx";
+        String targetFile = "D:\\workspace\\lib\\test\\20220208_2.pdf";
 
         FileOutputStream os = null;
         try {
@@ -22,8 +22,8 @@ public class SlidesUtils {
 
             long old = System.currentTimeMillis();
             os = new FileOutputStream(targetFile);
-            Presentation ppt = new Presentation(sourceFile);//加载源文件数据
-            ppt.save(os, com.aspose.slides.SaveFormat.Pdf);//设置转换文件类型并转换
+            Workbook excel = new Workbook(sourceFile);//加载源文件数据
+            excel.save(os, com.aspose.cells.SaveFormat.PDF);//设置转换文件类型并转换
             os.close();
             long now = System.currentTimeMillis();
             System.out.println("共耗时：" + ((now - old) / 1000.0) + "秒");  //转化用时
