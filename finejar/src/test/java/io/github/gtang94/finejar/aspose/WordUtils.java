@@ -1,14 +1,22 @@
 package io.github.gtang94.finejar.aspose;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ZipUtil;
 import com.aspose.imaging.*;
 import com.aspose.imaging.brushes.SolidBrush;
+import com.aspose.imaging.imageoptions.*;
 import com.aspose.words.*;
 import com.aspose.words.License;
 import com.aspose.words.Shape;
+import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,88 +27,160 @@ public class WordUtils {
     private static final String defaultWaterMarkFontFamily = "Times New Roman";
 
     public static void main(String[] args) {
-        String wordFile1 = "D:\\tmp\\word\\ISMS202202.docx";
+//        String wordFile1 = "D:\\tmp\\word\\ISMS202202.docx";
         String wordFile2 = "D:\\tmp\\word\\TheBrain_12_TransitionGuide_V8.docx";
-        String outPDFFile = "D:\\tmp\\word\\word2PDF.pdf";
-//        word2PDF(wordFile2, outPDFFile, 1, -1);
+//        String outPDFFile = "D:\\tmp\\word\\word2PDF.pdf";
 
-        String outImagesFile = "D:\\tmp\\word\\word2Images.png";
-//        word2Images(wordFile2, outImagesFile, SaveFormat.PNG);
 
-//        wordAddWaterMark(wordFile1, "233333333333");
+//        word2PDF(wordFile2, "D:\\tmp\\word\\", 0, -1);
 
-//        wordAddWaterMark(wordFile1, new File(outImagesFile));
+//        word2Images(wordFile2, "D:\\tmp\\word\\", SaveFormat.PNG, 0, 2);
+
+//        wordAddWaterMark(wordFile2, "D:\\tmp\\word\\", "TEST/TEST");
+
+//        images2PDF(
+//                Lists.newArrayList("D:\\tmp\\word\\4b2636b2-5884-4735-ab3d-1649c5a2acfc\\TheBrain_12_TransitionGuide_V8-0.png", "D:\\tmp\\word\\4b2636b2-5884-4735-ab3d-1649c5a2acfc\\TheBrain_12_TransitionGuide_V8-1.png"),
+//                "D:\\tmp\\word\\");
+
+//        imageFormatConvert("D:\\tmp\\word\\4b2636b2-5884-4735-ab3d-1649c5a2acfc\\TheBrain_12_TransitionGuide_V8-0.png", "D:\\tmp\\word\\", "svg");
 
     }
 
-    public static void word2PDF(String wordFile, String pdfFile, int startPageNo, int endPageNo) {
+    public static String word2PDF(String wordFile, String outputPath, int startPageNo, int endPageNo) {
 
         license();
 
         try {
-            Document doc = new Document(wordFile);
-            int pageCount = doc.getPageCount();
-            if (endPageNo > pageCount || Objects.equals(endPageNo, -1)) {
+            Document wordDocument = new Document(wordFile);
+            int pageCount = wordDocument.getPageCount();
+            if (endPageNo > pageCount || Objects.equals(endPageNo, -1) || endPageNo <0) {
                 endPageNo = pageCount;
+            }
+            if (startPageNo > pageCount || startPageNo < 0) {
+                startPageNo = 0;
             }
 
             PdfSaveOptions saveOptions = new PdfSaveOptions();
-            doc.save(pdfFile, saveOptions);
+            PageSet pageSet = new PageSet(new PageRange(startPageNo, endPageNo));
+            saveOptions.setPageSet(pageSet);
+
+            String inputFilename = FileNameUtil.getName(wordFile);
+            String filename = FileNameUtil.getPrefix(inputFilename);
+            String filenameSuffix = SaveFormat.getName(SaveFormat.PDF).toLowerCase();
+            String outputFile = outputPath + filename + "." + filenameSuffix;
+
+            wordDocument.save(outputFile, saveOptions);
+
+            return outputFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
-    public static void word2Images(String wordFile, String imagesFile, int saveFormat) {
+    public static String word2Images(String wordFile, String outputPath, int saveFormat, int startPageNo, int endPageNo) {
         license();
         try {
-            Document doc = new Document(wordFile);
+            Document wordDocument = new Document(wordFile);
+            Document imgDocument = new Document();
+
             ImageSaveOptions saveOptions = new ImageSaveOptions(saveFormat);
-            doc.save(imagesFile, saveFormat);
+            int pageCount = wordDocument.getPageCount();
+            if (endPageNo > pageCount || Objects.equals(endPageNo, -1) || endPageNo <0) {
+                endPageNo = pageCount;
+            }
+            if (startPageNo > pageCount || startPageNo < 0) {
+                startPageNo = 0;
+            }
+
+            String inputFilename = FileNameUtil.getName(wordFile);
+            String filename = FileNameUtil.getPrefix(inputFilename);
+            String filenameSuffix = SaveFormat.getName(saveFormat).toLowerCase();
+            String outputTempPath = outputPath + RandomUtil.randomUUID() + File.separator;
+            for (int i = startPageNo; i < endPageNo; i++) {
+                PageSet pageSet = new PageSet(new PageRange(i, i+1));
+                saveOptions.setPageSet(pageSet);
+
+                String tmp = outputTempPath + filename + "-" + i + "." + filenameSuffix;
+                wordDocument.save(tmp ,saveOptions);
+            }
+
+            String outputZipFile = outputPath + filename + ".zip";
+            ZipUtil.zip(outputTempPath, outputZipFile);
+
+            return outputZipFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public static void wordAddWaterMark(String wordFile, String waterMarkText) {
+    public static String wordAddWaterMark(String wordFile, String outputPath, String waterMarkText) {
+
+        return wordAddWaterMark(wordFile, outputPath, waterMarkText, defaultWaterMarkFontFamily, 36, java.awt.Color.ORANGE, WatermarkLayout.DIAGONAL, true);
+    }
+
+    public static String wordAddWaterMark(String wordFile, String outputPath, String waterMarkText,
+                                          String fontFamily, int fontSize, java.awt.Color color,
+                                          int watermarkLayout, boolean isSemitrasparent) {
         license();
         try {
             Document document = new Document(wordFile);
             TextWatermarkOptions options = new TextWatermarkOptions();
-            options.setFontSize(36);
-            options.setFontFamily(defaultWaterMarkFontFamily);
-            options.setColor(java.awt.Color.RED);
-            options.setLayout(WatermarkLayout.DIAGONAL);
-            options.isSemitrasparent(true);
+            options.setFontSize(fontSize);
+            options.setFontFamily(fontFamily);
+            options.setColor(color);
+            options.setLayout(watermarkLayout);
+            options.isSemitrasparent(isSemitrasparent);
 
             document.getWatermark().setText(waterMarkText, options);
 
-            document.save(wordFile);
+            String inputFilename = FileNameUtil.getName(wordFile);
+            String filenameSuffix = FileNameUtil.getSuffix(inputFilename);
+            String outputFile = outputPath + RandomUtil.randomUUID() + "." + filenameSuffix;
+
+            document.save(outputFile);
+            return outputFile;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public static void wordAddWaterMark(String wordFile, File waterMarkImageFile) {
+    public static String wordAddWaterMark(String wordFile, String outputPath, File waterMarkImageFile) {
+        return wordAddWaterMark(wordFile, outputPath, waterMarkImageFile, 0.0D, false);
+    }
+
+    public static String wordAddWaterMark(String wordFile, String outputPath, File waterMarkImageFile,
+                                        double scale, boolean washout) {
         license();
         try {
             Document document = new Document(wordFile);
 
             ImageWatermarkOptions options = new ImageWatermarkOptions();
-            options.isWashout(false);
+            options.setScale(scale);
+            options.isWashout(washout);
 
             BufferedImage image = ImageIO.read(waterMarkImageFile);
 
             document.getWatermark().setImage(image, options);
 
-            document.save(wordFile);
+            String inputFilename = FileNameUtil.getName(wordFile);
+            String filenameSuffix = FileNameUtil.getSuffix(inputFilename);
+            String outputFile = outputPath + RandomUtil.randomUUID() + "." + filenameSuffix;
+
+            document.save(outputFile);
+
+            return outputFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public static void images2PDF(List<String> imagesFileList, String pdfFile) {
+    public static void images2PDF(List<String> imagesFileList, String outputPath) {
         license();
         try {
             Document document = new Document();
@@ -109,7 +189,12 @@ public class WordUtils {
                 builder.insertImage(imagesFile);
                 builder.writeln();
             }
-            document.save(pdfFile, SaveFormat.PDF);
+
+            String filename = RandomUtil.randomUUID();
+            String filenameSuffix = SaveFormat.getName(SaveFormat.PDF).toLowerCase();
+            String outputFile = outputPath + filename + "." + filenameSuffix;
+
+            document.save(outputFile, SaveFormat.PDF);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,18 +214,49 @@ public class WordUtils {
         image.save(newImageFile);
     }
 
-    public static void imageFormatConvert(String imageFile, String newImageFile) {
+    public static String imageFormatConvert(String imageFile, String outputPath, String format) {
         license();
         try {
-            Document document = new Document();
-            DocumentBuilder builder = new DocumentBuilder(document);
-            Shape shape = builder.insertImage(imageFile);
-            ImageData imageData = shape.getImageData();
-            imageData.save(newImageFile);
+            Image image = Image.load(imageFile);
+
+            String suffix = "." + format;
+            ImageOptionsBase options = null;
+            switch (format) {
+                case "png":
+                    options = new PngOptions();
+                    break;
+                case "jpg":
+                    options = new JpegOptions();
+                    break;
+                case "bmp":
+                    options = new BmpOptions();
+                    break;
+                case "gif":
+                    options = new GifOptions();
+                    break;
+                case "psd":
+                    options = new PsdOptions();
+                    break;
+                case "svg":
+                    options = new SvgOptions();
+                    break;
+                case "webp":
+                    options = new WebPOptions();
+                    break;
+                default:
+                    // exception
+                    break;
+            }
+
+            String outputFile = outputPath + RandomUtil.randomUUID() + suffix;
+            image.save(outputFile, options);
+
+            return outputFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     public static boolean license() {
