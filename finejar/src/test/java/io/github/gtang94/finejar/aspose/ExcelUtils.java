@@ -21,7 +21,9 @@ public class ExcelUtils {
 
 //        excel2PDF(excelfile1, "D:\\tmp\\excel\\");
 
-        excel2Images(excelfile1, "D:\\tmp\\excel\\", ImageType.JPEG);
+//        excel2Images(excelfile1, "D:\\tmp\\excel\\", ImageType.WEB_P);
+
+//        excelAddWaterMark(excelfile1,"D:\\tmp\\excel\\", "233333333333");
 
     }
 
@@ -42,16 +44,6 @@ public class ExcelUtils {
         return null;
     }
 
-    // ImageType.WEB_P
-    // format 只支持
-    // ImageFormat.getEmf();
-    // ImageFormat.getWmf();
-    // ImageFormat.getJpeg();
-    // ImageFormat.getPng();
-    // ImageFormat.getBmp();
-    // ImageFormat.getGif();
-    // ImageFormat.getTiff();
-//     ImageFormat.getIcon();
     public static String excel2Images(String excelFile, String outputPath, int format) {
         license();
         try {
@@ -59,7 +51,7 @@ public class ExcelUtils {
 
             String inputFilename = FileNameUtil.getName(excelFile);
             String filename = FileNameUtil.getPrefix(inputFilename);
-            String filenameSuffix = ".jpg";
+            String filenameSuffix = getImageSuffixByFormat(format);
             String outputTempPath = outputPath + RandomUtil.randomUUID() + File.separator;
             FileUtil.mkdir(outputTempPath);
 
@@ -85,35 +77,6 @@ public class ExcelUtils {
             String outputZipFile = outputPath + filename + ".zip";
             ZipUtil.zip(outputTempPath, outputZipFile);
 
-//            ImageSaveOptions options = new ImageSaveOptions();
-
-
-//            switch (format) {
-//                case "png":
-//                    options = new ImageSaveOptions(SaveFormat.PNG);
-//                    break;
-//                case "jpg":
-//                    options = new ImageSaveOptions(SaveFormat.JPG);
-//                    break;
-//                case "bmp":
-//                    options = new ImageSaveOptions(SaveFormat.BMP);
-//                    break;
-//                case "gif":
-//                    options = new ImageSaveOptions(SaveFormat.GIF);
-//                    break;
-//                case "svg":
-//                    options = new ImageSaveOptions(SaveFormat.SVG);
-//                    break;
-//                default:
-//                    // exception
-//                    break;
-//            }
-//
-//            String filenameSuffix = "." + format;
-//            String outputFile = outputPath + RandomUtil.randomUUID() + "." + filenameSuffix;
-//
-//            workbook.save(outputFile, options);
-
             return outputZipFile;
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,7 +84,39 @@ public class ExcelUtils {
         return null;
     }
 
-    public static void excelAddWaterMark(String excelFile, String waterMarkText) {
+    public static String excelAddWaterMark(String excelFile, String outputPath, String waterMarkText) {
+
+        int fontSize = 18;
+        boolean fontBlod = false;
+        boolean fontltalic = true;
+        int upperLeftRow = 18;
+        int top = 8;
+        int upperLeftColumn = 1;
+        int left = 1;
+        int height = 130;
+        int width = 800;
+        Color color = Color.getRed();
+        double degree = 0.2;
+        int gradientStyleType = GradientStyleType.HORIZONTAL;
+        int variant = 2;
+        double transparency = 0.9;
+        boolean shapeLineFlag = true;
+        boolean selectionFlag = true;
+        boolean shapeTypeFlag = true;
+        boolean moveFlag = true;
+        boolean resizeFlag = true;
+        boolean textFlag = true;
+        return excelAddWaterMark(excelFile, outputPath, waterMarkText, defaultWaterMarkFontFamily, fontSize, fontBlod,
+                fontltalic, upperLeftRow, top, upperLeftColumn, left, height, width, color, degree, gradientStyleType, variant,
+                transparency, shapeLineFlag, selectionFlag, shapeTypeFlag, moveFlag, resizeFlag, textFlag);
+    }
+
+    public static String excelAddWaterMark(String excelFile, String outputPath, String waterMarkText,
+                                         String fontFamily, int fontSize, boolean fontBlod, boolean fontltalic,
+                                         int upperLeftRow, int top, int upperLeftColumn, int left, int height, int width,
+                                         Color color, double degree, int gradientStyleType, int variant, double transparency,
+                                         boolean shapeLineFlag, boolean selectionFlag, boolean shapeTypeFlag, boolean moveFlag,
+                                         boolean resizeFlag, boolean textFlag) {
         license();
         try {
             Workbook workbook = new Workbook(excelFile);
@@ -131,24 +126,31 @@ public class ExcelUtils {
             for (int i = 0; i < count; i++) {
                 Worksheet worksheet = worksheets.get(i);
 
-                Shape shape = worksheet.getShapes().addTextEffect(MsoPresetTextEffect.TEXT_EFFECT_1, waterMarkText, defaultWaterMarkFontFamily,
-                        50, false, true, 18, 8, 1, 1, 130, 800);
+                Shape shape = worksheet.getShapes().addTextEffect(MsoPresetTextEffect.TEXT_EFFECT_1, waterMarkText, fontFamily,
+                        fontSize, fontBlod, fontltalic, upperLeftRow, top, upperLeftColumn, left, height, width);
                 FillFormat fillFormat = shape.getFill();
-                fillFormat.setOneColorGradient(Color.getRed(), 0.2, GradientStyleType.HORIZONTAL, 2);
-                fillFormat.setTransparency(0.9);
+                fillFormat.setOneColorGradient(color, degree, gradientStyleType, variant);
+                fillFormat.setTransparency(transparency);
 
-                shape.setHasLine(false);
-                shape.setLockedProperty(ShapeLockType.SELECTION, true);
-                shape.setLockedProperty(ShapeLockType.SHAPE_TYPE, true);
-                shape.setLockedProperty(ShapeLockType.MOVE, true);
-                shape.setLockedProperty(ShapeLockType.RESIZE, true);
-                shape.setLockedProperty(ShapeLockType.TEXT, true);
+                shape.setHasLine(shapeLineFlag);
+                shape.setLockedProperty(ShapeLockType.SELECTION, selectionFlag);
+                shape.setLockedProperty(ShapeLockType.SHAPE_TYPE, shapeTypeFlag);
+                shape.setLockedProperty(ShapeLockType.MOVE, moveFlag);
+                shape.setLockedProperty(ShapeLockType.RESIZE, resizeFlag);
+                shape.setLockedProperty(ShapeLockType.TEXT, textFlag);
             }
 
-            workbook.save(excelFile);
+            String filenameSuffix = FileUtil.getSuffix(excelFile);
+            String outputFile = outputPath + RandomUtil.randomUUID() + "." + filenameSuffix;
+
+            workbook.save(outputFile);
+
+            return outputFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public static boolean license() {
@@ -162,26 +164,37 @@ public class ExcelUtils {
         }
     }
 
-    private String getImageSuffixByFormat(String format) {
-        switch (format) {
-            case "png":
-                options = new ImageSaveOptions(SaveFormat.PNG);
+    private static String getImageSuffixByFormat(int imageType) {
+        String suffix = ".png";
+        switch (imageType) {
+            case ImageType.EMF:
+                suffix = ".emf";
                 break;
-            case "jpg":
-                options = new ImageSaveOptions(SaveFormat.JPG);
+            case ImageType.WMF:
+                suffix = ".wmf";
                 break;
-            case "bmp":
-                options = new ImageSaveOptions(SaveFormat.BMP);
+            case ImageType.JPEG:
+                suffix = ".jpg";
                 break;
-            case "gif":
-                options = new ImageSaveOptions(SaveFormat.GIF);
+            case ImageType.PNG:
+                suffix = ".png";
                 break;
-            case "svg":
-                options = new ImageSaveOptions(SaveFormat.SVG);
+            case ImageType.BMP:
+                suffix = ".bmp";
+                break;
+            case ImageType.GIF:
+                suffix = ".gif";
+                break;
+            case ImageType.TIFF:
+                suffix = ".tiff";
+                break;
+            case ImageType.SVG:
+                suffix = ".svg";
                 break;
             default:
                 // exception
                 break;
         }
+        return suffix;
     }
 }
