@@ -1,5 +1,6 @@
 package io.github.gtang94.springboot.mybatis.dao;
 
+import io.github.gtang94.springboot.mybatis.bean.Role;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,4 +20,6 @@ public interface RoleDao {
     HashMap<String, String> getHashMapData(String ids);
 
     void save(@Param("id") Long id, @Param("name") String name);
+
+    Role selectEntity(@Param("id") Long id);
 }

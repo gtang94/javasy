@@ -1,5 +1,6 @@
 package io.github.gtang94.springboot.mybatis.service;
 
+import io.github.gtang94.springboot.mybatis.bean.Role;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Service;
  * @date 2022/4/12
  **/
 public interface RoleService {
+
+    Role show();
 }

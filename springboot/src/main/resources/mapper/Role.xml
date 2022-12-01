@@ -16,4 +16,8 @@
     <insert id="save">
         insert into role(id, name) values (#{id}, #{name})
     </insert>
+
+    <select id="selectEntity" resultType="io.github.gtang94.springboot.mybatis.bean.Role">
+        select * from role where id = 1
+    </select>
 </mapper>
