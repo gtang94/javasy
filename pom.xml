@@ -12,6 +12,12 @@
         <module>finejar</module>
         <module>springboot</module>
         <module>spring</module>
+        <module>framework</module>
+        <module>my-spi-consumer</module>
+        <module>my-framework-spi-provider</module>
+        <module>my-framework-spi-consumer</module>
+        <module>my-framework-spring-boot-start-provider</module>
+        <module>my-framework-spring-boot-start-consumer</module>
     </modules>
 
 
