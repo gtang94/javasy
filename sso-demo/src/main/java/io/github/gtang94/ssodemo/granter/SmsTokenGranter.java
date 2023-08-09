@@ -1,8 +1,18 @@
 package io.github.gtang94.ssodemo.granter;
 
+import io.github.gtang94.ssodemo.SmsAuthenticationToken;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
+import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.authentication.AuthenticationManager;
+
+import java.util.Map;
 
 /**
  * 验证码TokenGranter
@@ -11,14 +21,20 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
  */
 public class SmsTokenGranter extends AbstractTokenGranter {
 
-	public static final String GRANT_TYPE = "sms";
+    public static final String GRANT_TYPE = "sms";
+
+    private final AuthenticationManager authenticationManager;
 
 //	private IUserService userService;
 //	private RedisUtil redisUtil;
 
-	protected SmsTokenGranter(AuthorizationServerTokenServices tokenServices, ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory, String grantType) {
-		super(tokenServices, clientDetailsService, requestFactory, grantType);
-	}
+    protected SmsTokenGranter(AuthenticationManager authenticationManager,
+                              AuthorizationServerTokenServices tokenServices,
+                              ClientDetailsService clientDetailsService,
+                              OAuth2RequestFactory requestFactory) {
+        super(tokenServices, clientDetailsService, requestFactory, GRANT_TYPE);
+        this.authenticationManager = authenticationManager;
+    }
 
 //	@Override
 //	public UserInfo grant(TokenParameter tokenParameter) {
@@ -52,8 +68,31 @@ public class SmsTokenGranter extends AbstractTokenGranter {
 //		return userInfo;
 //	}
 
-	@Override
-	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
+    @Override
+    protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
+
+        Map<String, String> parameters = tokenRequest.getRequestParameters();
+        String phone = parameters.get("phone");
+		String smsCode = parameters.get("smsCode");
+		if (!checkSmsCode(phone, smsCode)) {
+			throw new UserDeniedAuthorizationException("sms code error");
+		}
+
+        Authentication authenticationToken = new SmsAuthenticationToken(phone, phone);
+        ((AbstractAuthenticationToken) authenticationToken).setDetails(parameters);
+        try {
+            authenticationToken = authenticationManager.authenticate(authenticationToken);
+        } catch (AccountStatusException | BadCredentialsException ase) {
+            throw new InvalidGrantException(ase.getMessage());
+        }
+
+
+        if (authenticationToken == null || !authenticationToken.isAuthenticated()) {
+            throw new InvalidGrantException("Could not authenticate user: " + phone);
+        }
+		OAuth2Request storedOAuth2Request = getRequestFactory().createOAuth2Request(client, tokenRequest);
+		return new OAuth2Authentication(storedOAuth2Request, authenticationToken);
+
 //		HttpServletRequest request = WebUtil.getRequest();
 //
 //		String key = request.getHeader(TokenUtil.CAPTCHA_HEADER_KEY);
@@ -92,7 +131,11 @@ public class SmsTokenGranter extends AbstractTokenGranter {
 //
 //		OAuth2Request storedOAuth2Request = getRequestFactory().createOAuth2Request(client, tokenRequest);
 //		return new OAuth2Authentication(storedOAuth2Request, userAuth);
-		return null;
+//        return null;
+    }
+
+	private boolean checkSmsCode(String phone, String smsCode) {
+		return true;
 	}
 
 }
